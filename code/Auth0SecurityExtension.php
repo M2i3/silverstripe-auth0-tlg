@@ -15,6 +15,9 @@ class Auth0SecurityExtension extends Extension
 
     public function auth0()
     {
+        
+        $config = Auth0SiteConfigExtension::getAuth0Data();
+        
         if (!Controller::has_curr()) {
             return $this->closePopupScript();
         }
@@ -92,40 +95,44 @@ class Auth0SecurityExtension extends Extension
             return $this->closePopupScript();
         }
 
-        $member = Member::create();
-        $member->Email = $email;
-        $member->EmailVerified = $email_verified;
-        $member->FirstName = $given_name;
-        $member->Surname = $family_name;
-        if ($nickname != $email) {
-            $member->Nickname = $nickname;
-        }
+        if ($config->Auth0AutoCreate) {
 
-        switch ($gender) {
-            case 'male':
-                $member->Gender = 'Male';
-                break;
-            case 'female':
-                $member->Gender = 'Female';
-                break;
-        }
-
-        $member->Locale = i18n::get_locale_from_lang($locale);
-        if ($member->hasMethod('fillAuth0')) {
-            $member->fillAuth0($user);
-        }
-        $member->write();
-
-        // Store image
-        if ($member->hasField('AvatarID')) {
-            $image = self::storeRemoteImage(@file_get_contents($avatar), 'Avatar' . $member->ID, 'Avatars');
-            if ($image) {
-                $member->AvatarID = $image->ID;
-                $member->write();
+            $member = Member::create();
+            $member->Email = $email;
+            $member->EmailVerified = $email_verified;
+            $member->FirstName = $given_name;
+            $member->Surname = $family_name;
+            if ($nickname != $email) {
+                $member->Nickname = $nickname;
             }
-        }
 
-        $member->logIn();
+            switch ($gender) {
+                case 'male':
+                    $member->Gender = 'Male';
+                    break;
+                case 'female':
+                    $member->Gender = 'Female';
+                    break;
+            }
+
+            $member->Locale = i18n::get_locale_from_lang($locale);
+            if ($member->hasMethod('fillAuth0')) {
+                $member->fillAuth0($user);
+            }
+            $member->write();
+
+            // Store image
+            if ($member->hasField('AvatarID')) {
+                $image = self::storeRemoteImage(@file_get_contents($avatar), 'Avatar' . $member->ID, 'Avatars');
+                if ($image) {
+                    $member->AvatarID = $image->ID;
+                    $member->write();
+                }
+            }
+
+            $member->logIn();
+            
+        }
 
         return $this->closePopupScript();
     }

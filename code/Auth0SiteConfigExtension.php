@@ -14,6 +14,7 @@ class Auth0SiteConfigExtension extends DataExtension
         'Auth0ClientSecret' => "Varchar(191)",
         'Auth0Connections' => "Varchar(191)",
         'Auth0Audience' => "Varchar(191)",
+        'Auth0AutoCreate' => "Boolean",
     );
 
     public function updateCMSFields(\FieldList $fields)
@@ -26,6 +27,7 @@ class Auth0SiteConfigExtension extends DataExtension
         $fields->addFieldToTab('Root.Auth0', $Auth0Connections = new TextField('Auth0Connections', 'Connections'));
         $Auth0Connections->setAttribute('placeholder', 'google-oauth2,facebook,...');
         $Auth0Connections->setDescription("Comma separated list of available connections");
+        $fields->addFieldToTab('Root.Auth0', CheckboxField::create('Auth0AutoCreate', 'Automatically create user'));
     }
 
     /**
