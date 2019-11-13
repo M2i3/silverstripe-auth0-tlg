@@ -54,54 +54,32 @@ class Auth0LoginForm extends MemberLoginForm
         $auth0_client_id = $data['client_id'];
         $auth0_callback = $data['redirect_uri'];
 
-        // Please include jQuery in the init method of your controller
-//        Requirements::javascript("https://cdn.auth0.com/w2/auth0-7.6.1.min.js");
-//        Requirements::customScript(<<<JS
-//var auth0 = new Auth0({
-//  domain:         '$auth0_domain',
-//  clientID:       '$auth0_client_id',
-//  callbackURL:    '$auth0_callback',
-//  responseType: 'token'
-//});
-//jQuery(function() {
-//  jQuery('.auth0-popup').on('click',function(e) {
-//       e.preventDefault();
-//       var opts = {
-//           popup: true,
-//           connection: jQuery(this).data('connection'),
-//           scope: 'openid profile'
-//       };
-//       auth0.login(opts, function(err, result) {
-//            if (err) {
-//              console.log("something went wrong: " + err.message);
-//              return;
-//            }
-//          });
-//  });
-//});
-//JS
-//        );
-        Requirements::javascript("https://cdn.auth0.com/w2/auth0-7.1.min.js");
-        Requirements::customScript(<<<JS
-var auth0 = new Auth0({
-  domain:         '$auth0_domain',
-  clientID:       '$auth0_client_id',
-  callbackURL:    '$auth0_callback'
+        Requirements::javascript("https://cdn.auth0.com/js/auth0/9.11/auth0.min.js");
+        Requirements::customScript(<<<JAVASCRIPT
+
+var webAuth = new auth0.WebAuth({
+    domain:       '$auth0_domain',
+    clientID:     '$auth0_client_id',
+    redirectUri:  '$auth0_callback',
+    responseType: 'code',
+    scope: 'openid profile email',
+    responseMode: 'query'
 });
+
 jQuery(function() {
   jQuery('.auth0-popup').on('click',function(e) {
        e.preventDefault();
-       auth0.signin({popup: true, connection: jQuery(this).data('connection')}, function(err, result) {
-            if (err) {
-              console.log("something went wrong: " + err.message);
-              return;
-            }
-          });
+       webAuth.popup.authorize({
+           connection: jQuery(this).data('connection')
+       }, function(err, authResult) {
+           console.log("something went wrong: " + err.message);
+           return;
+       });
   });
 });
-JS
+            
+JAVASCRIPT
         );
-
 
         return true;
     }

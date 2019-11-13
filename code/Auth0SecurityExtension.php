@@ -207,6 +207,8 @@ class Auth0SecurityExtension extends Extension
             'client_id' => $data['client_id'],
             'client_secret' => $data['client_secret'],
             'redirect_uri' => $data['redirect_uri'],
+            'scope' => 'openid profile email',
+            'state_handler' => false,
             'debug' => $data['debug'],
             'store' => false,
 //            'persist_id_token' => true,
