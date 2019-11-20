@@ -163,17 +163,15 @@ class Auth0SecurityExtension extends Extension
 
         return Image::find($folderName . '/' . $name);
     }
-
+    
     protected function closePopupScript()
     {
-        return '<script>
-    window.onunload = refreshParent;
-    function refreshParent() {
-        window.opener.location.reload();
-    }
-    self.close();
-</script>
-</html>';
+        return '<html><script>
+            (function () {
+                window.opener.location.reload();
+                self.close();
+            })();
+            </script></html>';
     }
 
     /**
