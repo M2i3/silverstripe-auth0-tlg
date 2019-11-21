@@ -95,7 +95,7 @@ class Auth0SecurityExtension extends Extension
             return $this->closePopupScript();
         }
 
-        if ($config->Auth0AutoCreate) {
+        if ($config['auto_create']) {
 
             $member = Member::create();
             $member->Email = $email;

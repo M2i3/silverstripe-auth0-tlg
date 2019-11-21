@@ -75,6 +75,7 @@ class Auth0SiteConfigExtension extends DataExtension
             'redirect_uri' => Auth0SecurityExtension::Auth0CallbackUrl(),
             'connections' => $connections,
             'debug' => Director::isDev() ? true : false,
+            'auto_create' => $sc->Auth0AutoCreate,
         ];
     }
 }
